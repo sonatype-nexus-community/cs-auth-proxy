@@ -26,7 +26,7 @@ environment for Nexus IQ using Docker and Docker Compose.
 * Access IQ at: http://localhost:8000/iq
 * Debug Apache-level variables at: http://localhost:8000/cgi-bin/debug
 * Debug HTTP requests received by the backend service at: http://localhost:8000/echo/
-* Access Keycloak IdP at: http://localhost:8080.  Username / Password: `admin` / `admin123`
+* Access Keycloak IdP at: http://localhost:8080. (username / password: `admin` / `admin123`)
 
 ### Background
 
