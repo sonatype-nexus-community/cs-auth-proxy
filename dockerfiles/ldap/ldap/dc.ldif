@@ -1,0 +1,143 @@
+dn: dc=sse,dc=sonatype,dc=com
+objectClass: dcObject
+objectClass: organization
+o: sse.sonatype.com
+dc: sse
+structuralObjectClass: organization
+entryUUID: 705c518e-3b00-1036-9cc5-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194248Z
+entryCSN: 20161109194248.851251Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194248Z
+
+dn: ou=users,dc=sse,dc=sonatype,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: users
+structuralObjectClass: organizationalUnit
+entryUUID: 705de378-3b00-1036-9cc6-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194248Z
+entryCSN: 20161109194248.861543Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194248Z
+
+dn: ou=groups,dc=sse,dc=sonatype,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+structuralObjectClass: organizationalUnit
+entryUUID: 705f451a-3b00-1036-9cc7-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194248Z
+entryCSN: 20161109194248.870596Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194248Z
+
+dn: cn=manager,ou=groups,dc=sse,dc=sonatype,dc=com
+description: admin
+objectClass: groupOfUniqueNames
+cn: manager
+uniqueMember: cn=ckent,ou=users,dc=sse,dc=sonatype,dc=com
+uniqueMember: cn=bwayne,ou=users,dc=sse,dc=sonatype,dc=com
+structuralObjectClass: groupOfUniqueNames
+entryUUID: 705fd642-3b00-1036-9cc8-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194248Z
+entryCSN: 20161109194308.727979Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+
+dn: cn=developer,ou=groups,dc=sse,dc=sonatype,dc=com
+description: admin
+objectClass: groupOfUniqueNames
+cn: developer
+uniqueMember: cn=ckent,ou=users,dc=sse,dc=sonatype,dc=com
+uniqueMember: cn=bwayne,ou=users,dc=sse,dc=sonatype,dc=com
+uniqueMember: cn=pparker,ou=users,dc=sse,dc=sonatype,dc=com
+structuralObjectClass: groupOfUniqueNames
+entryUUID: 706180b4-3b00-1036-9cc9-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194248Z
+entryCSN: 20161109194308.735310Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+
+dn: cn=administrator,ou=groups,dc=sse,dc=sonatype,dc=com
+objectClass: groupOfUniqueNames
+cn: administrator
+uniqueMember: cn=ckent,ou=users,dc=sse,dc=sonatype,dc=com
+uniqueMember: cn=mmurdock,ou=users,dc=sse,dc=sonatype,dc=com
+structuralObjectClass: groupOfUniqueNames
+entryUUID: 7061f56c-3b00-1036-9cca-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194248Z
+entryCSN: 20161109194308.739666Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+
+dn: cn=ckent,ou=users,dc=sse,dc=sonatype,dc=com
+objectClass: inetOrgPerson
+cn: ckent
+displayName: Clark Kent
+givenName: Clark
+sn: Kent
+mail: ckent@sonatype.com
+userPassword:: Y2hAbmdlbWU=
+structuralObjectClass: inetOrgPerson
+entryUUID: 7c2e6560-3b00-1036-9ccc-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194308Z
+entryCSN: 20161109194308.682953Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+
+dn: cn=bwayne,ou=users,dc=sse,dc=sonatype,dc=com
+objectClass: inetOrgPerson
+cn: bwayne
+displayName: Bruce Wayne
+givenName: Bruce
+sn: Wayne
+mail: bwayne@sonatype.com
+userPassword:: Y2hAbmdlbWU=
+structuralObjectClass: inetOrgPerson
+entryUUID: 7c34b96a-3b00-1036-9ccd-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194308Z
+entryCSN: 20161109194308.724429Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+
+dn: cn=pparker,ou=users,dc=sse,dc=sonatype,dc=com
+objectClass: inetOrgPerson
+cn: pparker
+displayName: Peter Parker
+givenName: Peter
+sn: Parker
+mail: pparker@sonatype.com
+userPassword:: Y2hAbmdlbWU=
+structuralObjectClass: inetOrgPerson
+entryUUID: 7c35e132-3b00-1036-9cce-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194308Z
+entryCSN: 20161109194308.732001Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+
+dn: cn=mmurdock,ou=users,dc=sse,dc=sonatype,dc=com
+objectClass: inetOrgPerson
+cn: mmurdock
+displayName: Matt Murdock
+givenName: Matt
+sn: Murdock
+mail: mmurdock@sonatype.com
+userPassword:: Y2hAbmdlbWU=
+structuralObjectClass: inetOrgPerson
+entryUUID: 7c3689fc-3b00-1036-9ccf-753a28aab564
+creatorsName: cn=root,dc=sse,dc=sonatype,dc=com
+createTimestamp: 20161109194308Z
+entryCSN: 20161109194308.736322Z#000000#000#000000
+modifiersName: cn=root,dc=sse,dc=sonatype,dc=com
+modifyTimestamp: 20161109194308Z
+

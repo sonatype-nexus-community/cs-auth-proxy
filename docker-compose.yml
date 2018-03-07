@@ -1,0 +1,43 @@
+version: '2.1'
+services:
+  http-echo-server:
+    image: jswank/http-echo-server
+    tty: true
+  ldap:
+    build: dockerfiles/ldap
+    image: sonatype/ldap
+  saml-proxy:
+    build: dockerfiles/saml-proxy
+    image: sonatype/saml-proxy
+    command: /update-idp-xml.sh
+    ports:
+      - "8000:8000"
+    links:
+      - http-echo-server
+      - keycloak
+    depends_on:
+      - keycloak
+  keycloak:
+    build: dockerfiles/keycloak
+    image: sonatype/keycloak
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin123
+      - DB_VENDOR=H2
+      - KEYCLOAK_LOGLEVEL=DEBUG
+    ports:
+      - "8080:8080"
+    links:
+      - ldap
+  iq:
+    image: jswank/iq-server
+    environment:
+      - JVM_OPTIONS=-Ddw.baseUrl=http://localhost:8000/iq/ -Ddw.http.requestLog.console.enabled=true  -Ddw.reverseProxyAuthentication.enabled=true -Ddw.reverseProxyAuthentication.usernameHeader=X-SSO-USER
+    volumes:
+      - iq-server-data:/sonatype-work
+    links:
+      - ldap
+
+volumes:
+  iq-server-data:
+    external: true

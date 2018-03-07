@@ -1,0 +1,22 @@
+version: '2'
+services:
+  ldap:
+    build: ./dockerfiles/ldap
+    image: ldap
+  iq:
+    build: ./dockerfiles/iq-server
+    image: iq-server
+    environment:
+      - JVM_OPTIONS=-Ddw.http.requestLog.console.enabled=true
+    volumes:
+      - iq-server-data:/sonatype-work
+    ports:
+      - "18070:8070"
+      - "18071:8071"
+    links:
+      - ldap
+
+volumes:
+  iq-server-data:
+    external: true
+
