@@ -30,21 +30,23 @@ environment for Nexus IQ using Docker and Docker Compose.
 
 ### Background
 
-Some customers want SAML support for our products.  This docker-compose based
-approach provides a SSO environment similar to that deployed by these
+Some customers want SAML support for our products. This docker-compose based
+approach demonstrates a functional SSO environment similar to that deployed by these
 customers: 
 
-* a reverse proxy (Apache httpd) which interacts via SAML 2.0 to authenticate
-  users, and add HTTP headers to a backend IQ instance.
-
-* a populated LDAP (OpenLDAP) with four users belonging to a combination of three groups.
-
-* a licensed IQ instance configured to use the supplied HTTP header,
-  communicate with the LDAP instance, and associate the LDAP *administrators*
-  group to the *System Administrator* role.  This is provisioned locally &
-  on-demand via a script.
-
 * An authorization service (Keycloak), acting as a SAML 2.0 Identity Provider.
+  This simulates the customer's existing IdP.
+
+* A populated LDAP (OpenLDAP) with four users belonging to a combination of
+  three groups.  This simulates a customer's LDAP store.
+
+* A reverse proxy (Apache HTTPD) which acts as a SAML 2.0 Service Provider and
+  proxies requests to a backend IQ instance.
+
+* A licensed IQ instance configured to use the proxy-supplied HTTP headers,
+  communicate with the LDAP instance, and associate the LDAP *administrators*
+  group to the *System Administrator* role.
+
 
 The base images for the environment are available on Dockerhub and customized
 at runtime.
@@ -53,7 +55,7 @@ at runtime.
 
 This environment provides a fully functional SAML-based setup.  But, to be
 useful as a reference implementation, more information about how Apache /
-mod_auth_mellon are configured and operate is required.
+mod_auth_mellon are configured and operate is provided below.
 
 ### General Overview
 
@@ -222,9 +224,9 @@ this is possible since parameters rather than `config.yml` are used to enable
 **User information**. The following users are in the directory.  All users have
 the same password: **ch@ngeme**.
 
-* Username: `ckent`; Groups: administrator, manager, developer
 * Username: `bwayne`; Groups: manager, developer
-* Username: `pparker`; Groups: developer
+* Username: `ckent`; Groups: administrator, manager, developer
 * Username: `mmurdoch`; Groups: administrator
+* Username: `pparker`; Groups: developer
 
 
