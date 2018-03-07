@@ -17,28 +17,29 @@ environment for Nexus IQ using Docker and Docker Compose.
 ### Quickstart
 
 ```console
-  $ bin/create-iq-volume.sh path_to_license_file
+  $ [bin/create-iq-volume.sh](bin/create-iq-volume.sh) path_to_license_file
   $ docker-compose build
   $ docker-compose up -d
 ```
 
-* Test SAML-based authentication at: http://localhost:8080/
-* Access IQ at: http://localhost:8080/iq
-* Debug Apache-level variables at: http://localhost:8080/cgi-bin/debug
-* Debug HTTP requests received by the backend service at: http://localhost:8080/echo/
+* Test SAML-based authentication at: http://localhost:8000/
+* Access IQ at: http://localhost:8000/iq
+* Debug Apache-level variables at: http://localhost:8000/cgi-bin/debug
+* Debug HTTP requests received by the backend service at: http://localhost:8000/echo/
 * Access Keycloak IdP at: http://localhost:8080
-*
+
 ### Background
 
 Some customers want SAML support for our products.  This docker-compose based
-approach provides a SSO environment similar to that deployed by customers: 
+approach provides a SSO environment similar to that deployed by these
+customers: 
 
 * a reverse proxy (Apache httpd) which interacts via SAML 2.0 to authenticate
   users, and add HTTP headers to a backend IQ instance.
 
-* a populated ldap (OpenLDAP) with four users belonging to a combination of three groups.
+* a populated LDAP (OpenLDAP) with four users belonging to a combination of three groups.
 
-* a licensed IQ instance configured to: use the supplied HTTP header,
+* a licensed IQ instance configured to use the supplied HTTP header,
   communicate with the LDAP instance, and associate the LDAP *administrators*
   group to the *System Administrator* role.  This is provisioned locally &
   on-demand via a script.
@@ -48,12 +49,11 @@ approach provides a SSO environment similar to that deployed by customers:
 The base images for the environment are available on Dockerhub and customized
 at runtime.
 
-
 ## SAML Configuration
 
 This environment provides a fully functional SAML-based setup.  But, to be
 useful as a reference implementation, more information about how Apache /
-mod_auth_mellon are configured and operate required.
+mod_auth_mellon are configured and operate is required.
 
 ### General Overview
 
@@ -83,7 +83,7 @@ Initial configuration includes:
 
 4. **Configure the Proxy**.  Once the Apache SP is configured and
    authentication is working, information about from the SAML assertion must be
-   passed to the service being proxied.  
+   passed to the service being proxied.
 
 ### Create Service Provider Metadata
 
@@ -114,8 +114,8 @@ AssertionConsumerService (PAOS):          http://localhost:8000/mellon/paosRespo
 ### IdP Configuration
 
 In order to add a new service to the IdP, the information generated in the
-previous step is required.  Keycloak (and some other IdPs) allows can import
-this metadata directly, others may require some manual addition.
+previous step is required. Keycloak (and some other IdPs) can import this
+metadata directly, others may require a more manual procedure.
 
 Arbitrary assertions can be provided by the IdP to the SP: they typically
 include group membership and extended information about the user.
@@ -154,13 +154,13 @@ configuration for another IdP.
   script which outputs all server variables.  These variables can be used
   within Apache directives, passed via headers, etc.
 
-* [jswank/http-echo-server](https://hub.docker.com/r/jswank/http-echo-server/):
- a docker image which can be used to echo all HTTP requests it receives.
+* The [echo service config](dockerfiles/saml-proxy/httpd/conf.d/echo-service.conf)
+proxies requests to a docker container running a simple HTTP echo service
+[jswank/http-echo-server](https://hub.docker.com/r/jswank/http-echo-server/).
+This service is accessible via the URL http://localhost:8000/echo/.
 
-The [Sonatype COTS config)(dockerfiles/saml-proxy/httpd/conf.d/sonatype-cots.conf) proxies
-the following locations:
-
-* /iq -> IQ instance
+The [Sonatype COTS config](dockerfiles/saml-proxy/httpd/conf.d/sonatype-cots.conf) proxies
+requests for Sonatype IQ: https://localhost:8000/iq/.
 
 ## Details
 
