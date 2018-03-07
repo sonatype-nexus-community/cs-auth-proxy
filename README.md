@@ -26,7 +26,7 @@ environment for Nexus IQ using Docker and Docker Compose.
 * Access IQ at: http://localhost:8000/iq
 * Debug Apache-level variables at: http://localhost:8000/cgi-bin/debug
 * Debug HTTP requests received by the backend service at: http://localhost:8000/echo/
-* Access Keycloak IdP at: http://localhost:8080
+* Access Keycloak IdP at: http://localhost:8080.  Username / Password: `admin` / `admin123`
 
 ### Background
 
@@ -66,7 +66,7 @@ For us:
 * The Service Provider is Apache HTTPD.
 * The Identity Provider is Keycloak.
 
-Initial configuration includes:
+The configuration process includes the following steps:
 
 1. **Create Service Provider metadata**. The `mod_auth_mellon` module includes
    a helper script to create an XML-formatted metadata file describing the
