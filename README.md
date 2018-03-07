@@ -1,5 +1,3 @@
-# cs-auth-proxy
-
 Here are scripts and configuration to build a SAML-based authentication
 environment for Nexus IQ using Docker and Docker Compose.
 
