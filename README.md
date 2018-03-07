@@ -6,7 +6,7 @@ environment for Nexus IQ using Docker and Docker Compose.
 <img src="saml-auth-testing.png" width="60%">
 
 * [Overview](#overview)
-* [SAML Configuration](#saml)
+* [SAML Configuration](#saml-configuration)
 * [Details](#details)
   * [Alternate Deployment: IQ and LDAP](#alternate-deployment-iq-and-ldap)
   * [Scripts](#scripts)
@@ -59,7 +59,7 @@ mod_auth_mellon are configured and operate required.
 
 Here is what the final authentication workflow looks like:
 
-<img src="https://en.wikipedia.org/wiki/SAML_2.0#/media/File:Saml2-browser-sso-redirect-post.png" width="60%"/>
+<img src="saml2-redirect.png" width="60%"/>
 
 For us:
 
