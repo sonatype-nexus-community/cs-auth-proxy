@@ -4,8 +4,7 @@ services:
     build: ./dockerfiles/ldap
     image: ldap
   iq:
-    build: ./dockerfiles/iq-server
-    image: iq-server
+    image: jswank/iq-server
     environment:
       - JVM_OPTIONS=-Ddw.http.requestLog.console.enabled=true
     volumes:
