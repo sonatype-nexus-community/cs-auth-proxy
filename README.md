@@ -17,7 +17,7 @@ environment for Nexus IQ using Docker and Docker Compose.
 ### Quickstart
 
 ```console
-  $ [bin/create-iq-volume.sh](bin/create-iq-volume.sh) path_to_license_file
+  $ bin/create-iq-volume.sh license_file
   $ docker-compose build
   $ docker-compose up -d
 ```
