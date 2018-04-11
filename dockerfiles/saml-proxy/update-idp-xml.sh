@@ -10,7 +10,7 @@ until curl -f -s -o /dev/null -f $URL; do
   sleep 5
 done
 
->&2 echo "keycloack is up - retrieving idp descriptor"
+>&2 echo "keycloak is up - retrieving idp descriptor"
 
 curl -s -o $FILENAME $URL
 
