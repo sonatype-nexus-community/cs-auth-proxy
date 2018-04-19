@@ -32,7 +32,7 @@ services:
   iq:
     image: jswank/iq-server
     environment:
-      - JVM_OPTIONS=-Ddw.baseUrl=http://localhost:8000/iq/ -Ddw.http.requestLog.console.enabled=true  -Ddw.reverseProxyAuthentication.enabled=true -Ddw.reverseProxyAuthentication.usernameHeader=X-SSO-USER
+      - IQ_OPTIONS=-Ddw.baseUrl=http://localhost:8000/iq/ -Ddw.forceBaseUrl=true -Ddw.logging.appenders[1].threshold=OFF -Ddw.reverseProxyAuthentication.enabled=true -Ddw.reverseProxyAuthentication.usernameHeader=X-SSO-USER
     volumes:
       - iq-server-data:/sonatype-work
     links:

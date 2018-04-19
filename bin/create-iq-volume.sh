@@ -4,8 +4,7 @@
 #
 
 set -o errexit
-
-POLICY_URL=${POLICY_URL:=https://books.sonatype.com/sonatype-clm-book/resources/Sonatype-Sample-Policy-Set-1.22.json}
+set -o xtrace 
 
 container_id=""
 container_ip=""
@@ -16,20 +15,11 @@ USAGE: create-iq-volume <license file>
 
 DESCRIPTION
 
-Create a new, populated volume for use w/ jswank/iq-server.  The volume is populated
-with the sample policy (URL defined via env variable POLICY_URL) and the license
-specified.
+Create a new, populated volume for use w/ jswank/iq-server.  
 
 EXAMPLES
 
   $ ./create-iq-volume sonatype-dev-nexus-firewall-bundle-2015.lic
-
-  $ POLICY_URL=https://books.sonatype.com/sonatype-clm-book/resources/Sonatype-Sample-Policy-Set-1.22.json \
-    ./create-iq-volume sonatype-dev-nexus-firewall-bundle-2015.lic
-
-ENVIRONMENT
-
-  POLICY_URL defaults to $POLICY_URL
 
 
 EOF
@@ -84,11 +74,6 @@ cleanup() {
 
 }
 
-fetch_policy() {
-  echo "fetching policy from $POLICY_URL" >&2
-  curl -f -s -o $tmpdir/policy.json $POLICY_URL
-}
-
 create_volume() {
   echo "creating volume iq-server-data" >&2
   docker volume create --label iq-server-data --name iq-server-data >/dev/null
@@ -98,7 +83,7 @@ start_iq_server() {
   echo "starting scratch container" >&2
 
   if [ "$is_darwin" = true ]; then
-    container_id=$(docker run -d -v iq-server-data:/sonatype-work -e JVM_OPTIONS="-server -Ddw.csrfProtection=false" -p 8070:8070 -p 8071:8071 jswank/iq-server)
+    container_id=$(docker run -d -v iq-server-data:/sonatype-work -e JVM_OPTIONS="-server -Ddw.csrfProtection=false -Ddw.createSampleData=true" -p 8070:8070 -p 8071:8071 jswank/iq-server)
     container_ip="127.0.0.1"
   else
     container_id=$(docker run -d -v iq-server-data:/sonatype-work -e JVM_OPTIONS="-server -Ddw.csrfProtection=false" jswank/iq-server)
@@ -123,11 +108,6 @@ apply_license() {
   curl --fail -s -u 'admin:admin123' -F file=@$license_file http://${container_ip}:8070/rest/product/license >/dev/null
 }
 
-load_policy() {
-  echo "loading policy" >&2
-  curl --fail -s -u 'admin:admin123' -F file=@${tmpdir}/policy.json http://${container_ip}:8070/rest/policy/organization/ROOT_ORGANIZATION_ID/import >/dev/null
-}
-
 add_root_organization_access() {
   echo "add root organization access" >&2
   ownerRoleId=$(curl -s --fail  -u 'admin:admin123' http://${container_ip}:8070/api/v2/applications/roles | sed -E 's/(^.*id":")(.*)(","name":"Owner".*$)/\2/')
@@ -141,7 +121,7 @@ configure_ldap() {
   # add ldap
   resp=$(curl -s --fail -u 'admin:admin123' -X POST -H "Content-type: application/json" \
     http://${container_ip}:8070/rest/config/ldap \
-    -d '{"$new":true,"id":null,"name":"ldap"}')
+    -d '{"id":null,"name":"ldap"}')
   # response: {"id":"a2908e08fb40400fa35fdcbbeff6afcd","name":"ldap","nameLowercaseNoWhitespace":"ldap"}
 
   # super awesome json parse to get the id
@@ -154,12 +134,14 @@ configure_ldap() {
   # add basic connection info
   curl -s --fail -u 'admin:admin123' -X PUT -H "Content-type: application/json" \
     http://${container_ip}:8070/rest/config/ldap/$id/connection \
-    -d "{\"id\":null,\"serverId\":\"$id\",\"protocol\":\"LDAP\",\"hostname\":\"ldap\",\"port\":389,\"searchBase\":\"dc=sse,dc=sonatype,dc=com\",\"authenticationMethod\":\"SIMPLE\",\"saslRealm\":\"\",\"systemUsername\":\"cn=root,dc=sse,dc=sonatype,dc=com\",\"systemPassword\":\"eatmyshorts\",\"connectionTimeout\":30,\"retryDelay\":30}"  >/dev/null
+    -d "{\"id\":null,\"serverId\":\"$id\",\"protocol\":\"LDAP\",\"hostname\":\"ldap\",\"port\":389,\"searchBase\":\"dc=sse,dc=sonatype,dc=com\",\"authenticationMethod\":\"SIMPLE\",\"saslRealm\":null,\"systemUsername\":\"cn=root,dc=sse,dc=sonatype,dc=com\",\"systemPassword\":\"eatmyshorts\",\"connectionTimeout\":30,\"retryDelay\":30}"  >/dev/null
 
   # add user / group configuration
   curl -s --fail -u 'admin:admin123' -X PUT -H "Content-type: application/json" \
     http://${container_ip}:8070/rest/config/ldap/$id/userMapping \
     -d "{\"id\":null,\"serverId\":\"$id\",\"userBaseDN\":\"ou=users\",\"userSubtree\":false,\"userObjectClass\":\"inetOrgPerson\",\"userFilter\":\"\",\"userIDAttribute\":\"cn\",\"userRealNameAttribute\":\"displayName\",\"userEmailAttribute\":\"mail\",\"userPasswordAttribute\":\"userPassword\",\"groupMappingType\":\"STATIC\",\"groupBaseDN\":\"ou=groups\",\"groupSubtree\":false,\"groupObjectClass\":\"groupOfUniqueNames\",\"groupIDAttribute\":\"cn\",\"groupMemberAttribute\":\"uniqueMember\",\"groupMemberFormat\":\"cn=\${username},ou=users,dc=sse,dc=sonatype,dc=com\",\"userMemberOfGroupAttribute\":null,\"dynamicGroupSearchEnabled\":true}" >/dev/null
+
+  # example: {"id":null,"serverId":"46c6c8cc82d34a08ad7e65ed8335ea72","userBaseDN":"ou=users","userSubtree":false,"userObjectClass":"inetOrgPerson","userFilter":"","userIDAttribute":"cn","userRealNameAttribute":"displayName","userEmailAttribute":"mail","userPasswordAttribute":"userPassword","groupMappingType":"STATIC","groupBaseDN":"ou=groups","groupSubtree":false,"groupObjectClass":"groupOfUniqueNames","groupIDAttribute":"cn","groupMemberAttribute":"uniqueMember","groupMemberFormat":"cn=${username},ou=users,dc=sse,dc=sonatype,dc=com","userMemberOfGroupAttribute":null,"dynamicGroupSearchEnabled":true}
 
   # get the System Administrator role id
   roleid=$(curl -s --fail -u 'admin:admin123' http://${container_ip}:8070/rest/membershipMapping/global/global | sed -E 's/(^.*roleId":")(.*)(","roleName":"System Administrator".*$)/\2/')
@@ -179,14 +161,12 @@ main() {
 
   trap cleanup INT TERM EXIT
 
-  fetch_policy
   create_volume
   start_iq_server
   wait_for_iq
 
   apply_license
   sleep 10
-  load_policy
   add_root_organization_access
   configure_ldap
   echo "volume creation complete" >&2 && exit 0
