@@ -7,6 +7,7 @@ environment for Nexus IQ using Docker and Docker Compose.
 * [SAML Configuration](#saml-configuration)
 * [Details](#details)
   * [Alternate Deployment: IQ and LDAP](#alternate-deployment-iq-and-ldap)
+  * [Alternate Deployment: Standalone IQ ](#alternate-deployment-iq)
   * [Scripts](#scripts)
   * [LDAP Information](#ldap-information)
   
@@ -21,7 +22,8 @@ environment for Nexus IQ using Docker and Docker Compose.
 ```
 
 * Test SAML-based authentication at: http://localhost:8000/
-* Access IQ at: http://localhost:8000/iq
+* Access IQ via SAML at: http://localhost:8000/iq
+* Access IQ via basic auth at: http://localhost:8000/api
 * Debug Apache-level variables at: http://localhost:8000/cgi-bin/debug
 * Debug HTTP requests received by the backend service at: http://localhost:8000/echo/
 * Access Keycloak IdP at: http://localhost:8080. (username / password: `admin` / `admin123`)
@@ -45,6 +47,9 @@ customers:
   communicate with the LDAP instance, and associate the LDAP *administrators*
   group to the *System Administrator* role.
 
+* IQ does *not* use LDAP directly.  By default, authenticated users granted
+access to the "Developer" role. Administrators should be added to the IQ server
+and to the appropriate IQ role(s). 
 
 The base images for the environment are available on Dockerhub and customized
 at runtime.

@@ -4,7 +4,6 @@
 #
 
 set -o errexit
-set -o xtrace 
 
 container_id=""
 container_ip=""
@@ -26,6 +25,8 @@ EOF
 }
 
 init() {
+
+  scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
   if [[ $# -lt 1 ]]; then
     usage
@@ -89,6 +90,9 @@ start_iq_server() {
     container_id=$(docker run -d -v iq-server-data:/sonatype-work -e JVM_OPTIONS="-server -Ddw.csrfProtection=false" jswank/iq-server)
     container_ip=$(docker inspect  -f '{{ .NetworkSettings.IPAddress }}' $container_id)
   fi
+
+  export API_URL=http://${container_ip}:8070/rest
+
 }
 
 function wait_for_iq {
@@ -109,7 +113,7 @@ apply_license() {
 }
 
 add_root_organization_access() {
-  echo "add root organization access" >&2
+  echo "add root organization access to ldap administrators group" >&2
   ownerRoleId=$(curl -s --fail  -u 'admin:admin123' http://${container_ip}:8070/api/v2/applications/roles | sed -E 's/(^.*id":")(.*)(","name":"Owner".*$)/\2/')
   curl -s --fail -u 'admin:admin123' -X PUT -H "Content-type: application/json" \
       http://${container_ip}:8070/api/v2/organizations/ROOT_ORGANIZATION_ID/roleMembers \
@@ -167,8 +171,13 @@ main() {
 
   apply_license
   sleep 10
-  add_root_organization_access
-  configure_ldap
+  # ensure authenticated users are in the "developer" role
+  ${scriptdir}/auth-dev.sh
+  # add ckent as local user
+  ${scriptdir}/add-user.sh ckent Clark Kent ckent@example.com
+  # add ckent as an admin
+  ${scriptdir}/add-admin.sh ckent 'Clark Kent' ckent@example.com
+
   echo "volume creation complete" >&2 && exit 0
 
 }

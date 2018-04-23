@@ -1,21 +1,12 @@
-version: '2'
+version: '2.1'
 services:
-  ldap:
-    build: dockerfiles/ldap
-    image: sonatype/ldap
   iq:
     image: jswank/iq-server
     environment:
       - IQ_OPTIONS=-Ddw.logging.appenders[1].threshold=OFF
     volumes:
       - iq-server-data:/sonatype-work
-    ports:
-      - "8070:8070"
-      - "8071:8071"
-    links:
-      - ldap
 
 volumes:
   iq-server-data:
     external: true
-

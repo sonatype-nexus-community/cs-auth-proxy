@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+USERNAME=${USERNAME:="admin"}
+PASSWORD=${PASSWORD:="admin123"}
+API_URL=${API_URL:="http://localhost:8070/rest"}
+
+function rest_client() {
+  local method=$1
+  local resource=$2
+
+  token=$(get_csrf_token)
+
+  if [ "${method}" = "POST" -o "${method}" = "PUT" ]; then
+    curl -s -f -u ${USERNAME}:${PASSWORD} \
+      -H "Content-type: application/json" \
+      -H "X-CSRF-TOKEN: ${token}" -b "CLM-CSRF-TOKEN=${token}" \
+      -d @- \
+      -X ${method} \
+      "${API_URL}/${resource}"
+  else
+    curl -s -f -u ${USERNAME}:${PASSWORD} \
+      -H "Content-type: application/json" \
+      -H "X-CSRF-TOKEN: ${token}" -b "CLM-CSRF-TOKEN=${token}" \
+      -X ${method} \
+      "${API_URL}/${resource}"
+  fi
+}
+
+function get_csrf_token() {
+  curl -s -f -i -u ${USERNAME}:${PASSWORD} \
+    -H "Content-type: application/json" \
+    -XPOST \
+    ${API_URL}/user/session \
+  | awk '/CLM-CSRF-TOKEN/{ sub(/.*=/,"",$(NF-1)); sub(/\;/,"",$(NF-1)); print $(NF-1) }' 
+}
+
+function get_admin_role_id() {
+  rest_client GET membershipMapping/global/global \
+  | sed -E 's/(^.*roleId":")(.*)(","roleName":"System Administrator".*$)/\2/'
+}
+
+if [[ $(basename $0) = iq-cli ]]; then
+  rest_client $1 $2
+fi
+
